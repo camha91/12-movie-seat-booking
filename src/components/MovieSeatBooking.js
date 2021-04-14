@@ -2,8 +2,18 @@ import React, { Component } from "react";
 import "../assets/MovieSeatBooking.css";
 import SeatBookingInfo from "./SeatBookingInfo";
 import SeatRow from "./SeatRow";
+import dataSeats from "../data/dataSeats.json";
 
 class MovieSeatBooking extends Component {
+  renderSeatRow = () => {
+    return dataSeats.map((row, index) => {
+      return (
+        <div key={index}>
+          <SeatRow seatRow={row} rowNumber={index} />
+        </div>
+      );
+    });
+  };
   render() {
     return (
       <div className="background">
@@ -19,13 +29,13 @@ class MovieSeatBooking extends Component {
               <div
                 style={{
                   display: "flex",
-                  flexDirection: "row",
+                  flexDirection: "column",
                   justifyContent: "center",
                 }}
                 className="mt-2"
               >
-                <div className="screen"></div>
-                <SeatRow />
+                <div className="screen ml-5"></div>
+                {this.renderSeatRow()}
               </div>
             </div>
             <div className="col-4">

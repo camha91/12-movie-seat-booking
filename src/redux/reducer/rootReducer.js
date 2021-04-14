@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import MovieSeatBooking from "./MovieSeatBookingReducer";
+import MovieSeatBooking from "../reducer/MovieSeatBookingReducer";
 
 const rootReducer = combineReducers({
   MovieSeatBooking,

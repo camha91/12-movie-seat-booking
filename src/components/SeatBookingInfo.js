@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { removeSeatAction } from "../redux/actions/MovieSeatBookingActions";
 
 class SeatBookingInfo extends Component {
   render() {
@@ -21,27 +23,49 @@ class SeatBookingInfo extends Component {
           </span>
         </div>
 
-        <div className="mt-5">
-          <table className="table" border="2">
+        <div className="mt-5 mr-5">
+          <table className="table text-center" border="5">
             <thead>
-              <tr className="text-light">
+              <tr className="text-light" style={{ fontSize: 20 }}>
                 <th>Seat Number</th>
                 <th>Price</th>
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-              <tr className="text-light">
-                <th>Seat Number</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-              <tr className="text-light">
-                <th>Seat Number</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
+            <tbody className="text-primary">
+              {this.props.selectedSeatList.map((selectedSeat, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{selectedSeat.seatNumber}</td>
+                    <td>${selectedSeat.price.toLocaleString()}</td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          this.props.removeSeat(selectedSeat.seatNumber);
+                        }}
+                        className="btn btn-danger"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
+            <tfoot>
+              <tr className="text-warning">
+                <td></td>
+                <td>SubTotal</td>
+                <td>
+                  $
+                  {this.props.selectedSeatList
+                    .reduce((subtotal, selectedSeat, index) => {
+                      return (subtotal += selectedSeat.price);
+                    }, 0)
+                    .toLocaleString()}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -49,4 +73,18 @@ class SeatBookingInfo extends Component {
   }
 }
 
-export default SeatBookingInfo;
+const mapStateToProps = (state) => {
+  return {
+    selectedSeatList: state.MovieSeatBooking.selectedSeatList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeSeat: (seatNumber) => {
+      return dispatch(removeSeatAction(seatNumber));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SeatBookingInfo);

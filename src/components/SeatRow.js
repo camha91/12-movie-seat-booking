@@ -1,21 +1,38 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { reserveSeatAction } from "../redux/actions/MovieSeatBookingActions";
 
 class SeatRow extends Component {
   renderSeat = () => {
     return this.props.seatRow.seatData.map((seat, index) => {
       let cssReservedSeat = "";
       let disabled = false;
+
+      // Seat already reserved
       if (seat.reserved) {
         cssReservedSeat = "reservedSeat";
         disabled = true;
       }
 
+      // Seat is selected to reserve
+      let cssSelectedSeat = "";
+      // Find the seat number of selected Seat
+      let indexSelectedSeat = this.props.selectedSeatList.findIndex(
+        (selectedSeat) => selectedSeat.seatNumber === seat.seatNumber
+      );
+
+      if (indexSelectedSeat !== -1) {
+        cssSelectedSeat = "selectedSeat";
+      }
+
       return (
         <button
           key={index}
-          onClick={() => {}}
+          onClick={() => {
+            this.props.reserveSeat(seat);
+          }}
           disabled={disabled}
-          className={`availableSeat ${cssReservedSeat}`}
+          className={`availableSeat ${cssReservedSeat} ${cssSelectedSeat}`}
         >
           {seat.seatNumber}
         </button>
@@ -61,4 +78,18 @@ class SeatRow extends Component {
   }
 }
 
-export default SeatRow;
+const mapStateToProps = (state) => {
+  return {
+    selectedSeatList: state.MovieSeatBooking.selectedSeatList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    reserveSeat: (seat) => {
+      dispatch(reserveSeatAction(seat));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SeatRow);
